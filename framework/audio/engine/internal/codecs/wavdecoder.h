@@ -22,31 +22,9 @@
 
 #pragma once
 
-#include <vector>
-
-#include "global/types/bytearray.h"
+#include "audiodecoder.h"
 
 namespace muse::audio::codec {
-//! Decoded contents of a RIFF/WAVE stream.
-struct WavData
-{
-    unsigned int sampleRate = 0;
-    unsigned int channels = 0;
-
-    //! Interleaved samples, normalised to the [-1, 1] range
-    std::vector<float> samples;
-
-    bool isValid() const
-    {
-        return sampleRate > 0 && channels > 0 && !samples.empty();
-    }
-
-    size_t framesCount() const
-    {
-        return channels > 0 ? samples.size() / channels : 0;
-    }
-};
-
 //! Minimal RIFF/WAVE reader.
 //!
 //! Supports PCM (8/16/24/32-bit integer) and IEEE float (32/64-bit) streams,
@@ -57,6 +35,6 @@ class WavDecoder
 {
 public:
     //! Decodes `data`; returns false if it is not a supported WAVE stream.
-    static bool decodeMemory(const ByteArray& data, WavData& out);
+    static bool decodeMemory(const ByteArray& data, AudioData& out);
 };
 }

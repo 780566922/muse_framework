@@ -27,7 +27,7 @@
 
 #include "../../../isynthresolver.h"
 
-#include "../../codecs/wavdecoder.h"
+#include "../../codecs/audiodecoder.h"
 
 namespace muse::audio::synth {
 //! Resolves audio clips attached to a score into playable sources.
@@ -39,7 +39,7 @@ namespace muse::audio::synth {
 class AudioFileResolver : public ISynthResolver::IResolver
 {
 public:
-    void setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::WavData>& data);
+    void setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::AudioData>& data);
     void clearClipData(const audio::AudioResourceId& id);
 
     ISynthesizerPtr resolveSynth(const audio::TrackId trackId, const audio::AudioInputParams& params,
@@ -53,7 +53,7 @@ public:
     void clearSources() override;
 
 private:
-    std::unordered_map<audio::AudioResourceId, std::shared_ptr<codec::WavData> > m_clips;
+    std::unordered_map<audio::AudioResourceId, std::shared_ptr<codec::AudioData> > m_clips;
 };
 
 using AudioFileResolverPtr = std::shared_ptr<AudioFileResolver>;

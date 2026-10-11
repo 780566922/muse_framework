@@ -159,8 +159,14 @@ else()
         # codecs
         internal/codecs/vorbisdecoder.cpp
         internal/codecs/vorbisdecoder.h
+        internal/codecs/audiodecoder.cpp
+        internal/codecs/audiodecoder.h
         internal/codecs/wavdecoder.cpp
         internal/codecs/wavdecoder.h
+        internal/codecs/oggdecoder.cpp
+        internal/codecs/oggdecoder.h
+        internal/codecs/mp3decoder.cpp
+        internal/codecs/mp3decoder.h
 
         # audio file source
         internal/synthesizers/audiofile/audiofilesource.cpp
@@ -172,8 +178,13 @@ else()
     # vorbisdecoder.cpp includes stb_vorbis.c, which defines short macros (L, C, R)
     # that conflict with <windows.h> that may be included in a different source file
     # when unity build is enabled
+    #
+    # The same applies to the other bundled decoders: they pull in a third-party
+    # implementation, which must not be merged into a unity build.
     set_source_files_properties(
         internal/codecs/vorbisdecoder.cpp
+        internal/codecs/oggdecoder.cpp
+        internal/codecs/mp3decoder.cpp
         PROPERTIES
         SKIP_UNITY_BUILD_INCLUSION ON
     )

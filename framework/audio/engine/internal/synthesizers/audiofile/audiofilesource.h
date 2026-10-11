@@ -24,7 +24,7 @@
 
 #include <memory>
 
-#include "../../codecs/wavdecoder.h"
+#include "../../codecs/audiodecoder.h"
 #include "../abstractsynthesizer.h"
 
 namespace muse::audio::synth {
@@ -36,7 +36,7 @@ class AudioFileSource : public AbstractSynthesizer
 public:
     AudioFileSource(const audio::AudioInputParams& params);
 
-    void setAudioData(const std::shared_ptr<codec::WavData>& data);
+    void setAudioData(const std::shared_ptr<codec::AudioData>& data);
 
     //! Position on the playback timeline (in seconds) at which the clip starts.
     //! Before it the source is silent.
@@ -69,7 +69,7 @@ private:
     //! Reads one frame, interpolating between neighbouring frames
     void readFrame(double frame, float* out, audioch_t outChannels) const;
 
-    std::shared_ptr<codec::WavData> m_data;
+    std::shared_ptr<codec::AudioData> m_data;
 
     OutputSpec m_outputSpec;
 

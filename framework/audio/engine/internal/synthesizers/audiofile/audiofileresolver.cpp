@@ -30,7 +30,7 @@ using namespace muse;
 using namespace muse::audio;
 using namespace muse::audio::synth;
 
-void AudioFileResolver::setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::WavData>& data)
+void AudioFileResolver::setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::AudioData>& data)
 {
     m_clips.insert_or_assign(id, data);
 }

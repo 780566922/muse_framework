@@ -118,14 +118,15 @@ float readSample(const uint8_t* p, uint16_t bitsPerSample, bool isFloat)
 }
 }
 
-bool WavDecoder::decodeMemory(const ByteArray& data, WavData& out)
+bool WavDecoder::decodeMemory(const ByteArray& data, AudioData& out)
 {
     const uint8_t* bytes = data.constData();
     const size_t size = data.size();
 
     // "RIFF" + size + "WAVE"
+    // Not being a WAVE stream is a perfectly normal outcome: the caller tries
+    // several decoders in turn, so this is not reported as an error.
     if (size < 12 || std::memcmp(bytes, "RIFF", 4) != 0 || std::memcmp(bytes + 8, "WAVE", 4) != 0) {
-        LOGE() << "not a RIFF/WAVE stream";
         return false;
     }
 

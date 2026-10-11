@@ -34,7 +34,7 @@ AudioFileSource::AudioFileSource(const audio::AudioInputParams& params)
 {
 }
 
-void AudioFileSource::setAudioData(const std::shared_ptr<codec::WavData>& data)
+void AudioFileSource::setAudioData(const std::shared_ptr<codec::AudioData>& data)
 {
     m_data = data;
 }
