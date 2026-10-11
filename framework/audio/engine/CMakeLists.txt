@@ -167,6 +167,10 @@ else()
         internal/codecs/oggdecoder.h
         internal/codecs/flacdecoder.cpp
         internal/codecs/flacdecoder.h
+        internal/codecs/mp4reader.cpp
+        internal/codecs/mp4reader.h
+        internal/codecs/aacdecoder.cpp
+        internal/codecs/aacdecoder.h
         internal/codecs/mp3decoder.cpp
         internal/codecs/mp3decoder.h
 

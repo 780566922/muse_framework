@@ -25,6 +25,7 @@
 #include "wavdecoder.h"
 #include "oggdecoder.h"
 #include "flacdecoder.h"
+#include "aacdecoder.h"
 #include "mp3decoder.h"
 
 using namespace muse::audio::codec;
@@ -49,6 +50,10 @@ bool AudioDecoder::decodeMemory(const ByteArray& data, AudioData& out)
     }
 
     if (FlacDecoder::decodeMemory(data, out)) {
+        return true;
+    }
+
+    if (AacDecoder::decodeMemory(data, out)) {
         return true;
     }
 
