@@ -30,9 +30,14 @@ using namespace muse;
 using namespace muse::audio;
 using namespace muse::audio::synth;
 
-void AudioFileResolver::setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::AudioData>& data)
+void AudioFileResolver::setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::AudioData>& data,
+                                    const AudioClipParams& params)
 {
-    m_clips.insert_or_assign(id, data);
+    Clip clip;
+    clip.data = data;
+    clip.params = params;
+
+    m_clips.insert_or_assign(id, clip);
 }
 
 void AudioFileResolver::clearClipData(const audio::AudioResourceId& id)
@@ -50,8 +55,12 @@ ISynthesizerPtr AudioFileResolver::resolveSynth(const audio::TrackId trackId, co
         return nullptr;
     }
 
+    const Clip& clip = search->second;
+
     std::shared_ptr<AudioFileSource> source = std::make_shared<AudioFileSource>(params);
-    source->setAudioData(search->second);
+    source->setAudioData(clip.data);
+    source->setTimelineStart(clip.params.startSec);
+    source->setTrim(clip.params.inSec, clip.params.outSec);
     source->setOutputSpec(spec);
 
     return source;

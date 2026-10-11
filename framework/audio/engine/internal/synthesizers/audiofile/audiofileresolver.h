@@ -30,6 +30,20 @@
 #include "../../codecs/audiodecoder.h"
 
 namespace muse::audio::synth {
+//! Where a clip sits on the timeline, and how it is trimmed.
+struct AudioClipParams
+{
+    //! Position on the playback timeline (in seconds) at which the clip starts
+    secs_t startSec = 0.0;
+
+    //! Offset inside the clip at which playback begins (trim from the start)
+    secs_t inSec = 0.0;
+
+    //! Offset inside the clip at which playback ends (trim from the end).
+    //! A negative value means "play on until the end of the clip".
+    secs_t outSec = -1.0;
+};
+
 //! Resolves audio clips attached to a score into playable sources.
 //!
 //! Unlike soundfonts or plugins, an audio clip is not a globally available
@@ -39,7 +53,8 @@ namespace muse::audio::synth {
 class AudioFileResolver : public ISynthResolver::IResolver
 {
 public:
-    void setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::AudioData>& data);
+    void setClipData(const audio::AudioResourceId& id, const std::shared_ptr<codec::AudioData>& data,
+                     const AudioClipParams& params = AudioClipParams());
     void clearClipData(const audio::AudioResourceId& id);
 
     ISynthesizerPtr resolveSynth(const audio::TrackId trackId, const audio::AudioInputParams& params,
@@ -53,7 +68,13 @@ public:
     void clearSources() override;
 
 private:
-    std::unordered_map<audio::AudioResourceId, std::shared_ptr<codec::AudioData> > m_clips;
+    struct Clip
+    {
+        std::shared_ptr<codec::AudioData> data;
+        AudioClipParams params;
+    };
+
+    std::unordered_map<audio::AudioResourceId, Clip> m_clips;
 };
 
 using AudioFileResolverPtr = std::shared_ptr<AudioFileResolver>;
