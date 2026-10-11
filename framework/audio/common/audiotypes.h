@@ -261,6 +261,7 @@ inline int intAttribute(const AudioResourceMeta& meta, const String& key, int fa
 // Wire strings persisted in the plugin cache; constexpr for the RESOURCE_TYPE_NAMES map below.
 inline constexpr std::string_view FLUID_SOUNDFONT_TYPE_NAME = "FluidSoundfont";
 inline constexpr std::string_view NATIVE_EFFECT_TYPE_NAME = "NativeEffect";
+inline constexpr std::string_view AUDIO_FILE_TYPE_NAME = "AudioFile";
 
 // Engine-internal routing enum, distinct from the opaque audioplugins::PluginType string.
 enum class AudioResourceType {
@@ -269,6 +270,7 @@ enum class AudioResourceType {
     VstPlugin,
     NativeEffect,
     MuseSamplerSoundPack,
+    AudioFile,
 };
 
 static const std::map<AudioResourceType, std::string> RESOURCE_TYPE_NAMES = {
@@ -276,6 +278,7 @@ static const std::map<AudioResourceType, std::string> RESOURCE_TYPE_NAMES = {
     { AudioResourceType::VstPlugin,             "VstPlugin" },
     { AudioResourceType::NativeEffect,          std::string(NATIVE_EFFECT_TYPE_NAME) },
     { AudioResourceType::MuseSamplerSoundPack,  "MuseSamplerSoundPack" },
+    { AudioResourceType::AudioFile,             std::string(AUDIO_FILE_TYPE_NAME) },
 };
 
 inline const std::string& resourceTypeName(AudioResourceType type)
@@ -317,6 +320,7 @@ static const std::map<AudioResourceType, QString> RESOURCE_TYPE_MAP = {
     { AudioResourceType::FluidSoundfont, "fluid_soundfont" },
     { AudioResourceType::VstPlugin, "vst_plugin" },
     { AudioResourceType::NativeEffect, "muse_plugin" },
+    { AudioResourceType::AudioFile, "audio_file" },
 };
 
 static const AudioResourceId MUSE_REVERB_ID("Muse Reverb");
@@ -381,6 +385,7 @@ struct AudioFxParams {
         case AudioResourceType::NativeEffect: return AudioFxType::MuseFx;
         case AudioResourceType::FluidSoundfont:
         case AudioResourceType::MuseSamplerSoundPack:
+        case AudioResourceType::AudioFile:
         case AudioResourceType::Undefined: break;
         }
 
@@ -454,7 +459,8 @@ enum class AudioSourceType {
     Undefined = -1,
     Fluid,
     Vsti,
-    MuseSampler
+    MuseSampler,
+    AudioFile
 };
 
 inline AudioSourceType sourceTypeFromResourceType(const muse::audioplugins::PluginType& metaType)
@@ -463,6 +469,7 @@ inline AudioSourceType sourceTypeFromResourceType(const muse::audioplugins::Plug
     case AudioResourceType::FluidSoundfont: return AudioSourceType::Fluid;
     case AudioResourceType::VstPlugin: return AudioSourceType::Vsti;
     case AudioResourceType::MuseSamplerSoundPack: return AudioSourceType::MuseSampler;
+    case AudioResourceType::AudioFile: return AudioSourceType::AudioFile;
     case AudioResourceType::NativeEffect:
     case AudioResourceType::Undefined: break;
     }

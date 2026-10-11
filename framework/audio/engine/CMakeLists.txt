@@ -159,6 +159,14 @@ else()
         # codecs
         internal/codecs/vorbisdecoder.cpp
         internal/codecs/vorbisdecoder.h
+        internal/codecs/wavdecoder.cpp
+        internal/codecs/wavdecoder.h
+
+        # audio file source
+        internal/synthesizers/audiofile/audiofilesource.cpp
+        internal/synthesizers/audiofile/audiofilesource.h
+        internal/synthesizers/audiofile/audiofileresolver.cpp
+        internal/synthesizers/audiofile/audiofileresolver.h
     )
 
     # vorbisdecoder.cpp includes stb_vorbis.c, which defines short macros (L, C, R)
