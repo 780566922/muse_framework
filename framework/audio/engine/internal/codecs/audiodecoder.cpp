@@ -23,8 +23,9 @@
 #include "audiodecoder.h"
 
 #include "wavdecoder.h"
-#include "mp3decoder.h"
 #include "oggdecoder.h"
+#include "flacdecoder.h"
+#include "mp3decoder.h"
 
 using namespace muse::audio::codec;
 
@@ -36,11 +37,18 @@ bool AudioDecoder::decodeMemory(const ByteArray& data, AudioData& out)
 
     out = AudioData();
 
+    //! NOTE The formats that announce themselves with a marker are tried first,
+    //! so that MP3 - which is found by looking for something that reads like a
+    //! frame anywhere in the stream - is only reached when nothing else fits.
     if (WavDecoder::decodeMemory(data, out)) {
         return true;
     }
 
     if (OggDecoder::decodeMemory(data, out)) {
+        return true;
+    }
+
+    if (FlacDecoder::decodeMemory(data, out)) {
         return true;
     }
 

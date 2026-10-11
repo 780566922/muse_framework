@@ -165,6 +165,8 @@ else()
         internal/codecs/wavdecoder.h
         internal/codecs/oggdecoder.cpp
         internal/codecs/oggdecoder.h
+        internal/codecs/flacdecoder.cpp
+        internal/codecs/flacdecoder.h
         internal/codecs/mp3decoder.cpp
         internal/codecs/mp3decoder.h
 
@@ -243,9 +245,11 @@ if (MUSE_MODULE_AUDIO_EXPORT)
 
     target_link_libraries(muse_audio_engine PRIVATE opusenc::opusenc Opus::opus)
 
-    target_link_libraries(muse_audio_engine PRIVATE FLAC::FLAC FLAC::FLAC++)
-
     target_link_libraries(muse_audio_engine PRIVATE fdk-aac::fdk-aac)
 endif() # MUSE_MODULE_AUDIO_EXPORT
+
+# FLAC is used both ways round: the decoders read it, and the encoders write it,
+# so the library is needed whether or not the score can be exported.
+target_link_libraries(muse_audio_engine PRIVATE FLAC::FLAC FLAC::FLAC++)
 
 target_link_libraries(muse_audio_engine PRIVATE muse_audio_common)
