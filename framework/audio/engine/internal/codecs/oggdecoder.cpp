@@ -69,12 +69,15 @@ bool OggDecoder::decodeMemory(const ByteArray& data, AudioData& out)
     std::vector<float> block(static_cast<size_t>(blockFloats));
 
     for (;;) {
-        const int readFloats = stb_vorbis_get_samples_float_interleaved(decoder, channels, block.data(), blockFloats);
-        if (readFloats <= 0) {
+        //! NOTE Despite the `num_floats` argument, this returns the number of
+        //! frames that were read, not the number of floats written.
+        const int readFrames = stb_vorbis_get_samples_float_interleaved(decoder, channels, block.data(), blockFloats);
+        if (readFrames <= 0) {
             break;
         }
 
-        out.samples.insert(out.samples.end(), block.data(), block.data() + readFloats);
+        const size_t readSamples = static_cast<size_t>(readFrames) * static_cast<size_t>(channels);
+        out.samples.insert(out.samples.end(), block.data(), block.data() + readSamples);
     }
 
     stb_vorbis_close(decoder);
