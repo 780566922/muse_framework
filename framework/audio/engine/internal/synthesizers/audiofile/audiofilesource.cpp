@@ -70,6 +70,13 @@ void AudioFileSource::setOutputSpec(const OutputSpec& spec)
     m_outputSpec = spec;
 }
 
+void AudioFileSource::setMode(const ProcessMode mode)
+{
+    AbstractSynthesizer::setMode(mode);
+
+    m_idle = (mode == ProcessMode::Idle);
+}
+
 const mpe::PlaybackData& AudioFileSource::playbackData() const
 {
     return m_playbackData;
@@ -119,6 +126,16 @@ samples_t AudioFileSource::process(float* buffer, samples_t samplesPerChannel)
     const double rate = static_cast<double>(m_data->sampleRate);
     const double frames = static_cast<double>(m_data->framesCount());
     const audioch_t outChannels = m_outputSpec.audioChannelCount;
+
+    //! NOTE The engine goes idle when the score is stopped or paused, and it
+    //! asks every source for samples either way. A clip has no voices for the
+    //! engine to stop - what keeps it sounding is its position on the timeline -
+    //! so the silence has to be produced here. Without this the clip plays on
+    //! over a score that has stood still.
+    if (m_idle) {
+        std::fill(buffer, buffer + samplesPerChannel * outChannels, 0.f);
+        return samplesPerChannel;
+    }
 
     const double startFrame = m_inSec * rate;
     double endFrame = frames;

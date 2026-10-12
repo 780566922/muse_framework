@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
 
 #include "../../codecs/audiodecoder.h"
@@ -51,6 +52,13 @@ public:
     bool isValid() const override;
 
     void setOutputSpec(const OutputSpec& spec) override;
+
+    //! NOTE Whatever keeps a clip sounding is its position on the timeline, not
+    //! a set of playing voices, so there is nothing for the engine's usual
+    //! means of stopping a source to act on. Going idle - which is what pausing
+    //! the score does - has to silence the clip instead, or it would carry on
+    //! playing over a score that has stood still. See the note in process().
+    void setMode(const ProcessMode mode) override;
 
     const mpe::PlaybackData& playbackData() const override;
 
@@ -82,5 +90,9 @@ private:
 
     //! An audio clip is not driven by notation events
     mpe::PlaybackData m_playbackData;
+
+    //! Set while the engine is idle, i.e. the score is stopped or paused. Read
+    //! on the processing thread, written on the engine thread.
+    std::atomic<bool> m_idle = false;
 };
 }
